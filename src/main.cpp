@@ -11,6 +11,7 @@
 #endif
 
 #include "version.h"
+#include <bson.h>
 
 // to be include here
 

@@ -40,6 +40,7 @@ configure_file (
 include_directories(${INCLUDE_FOLDER})
 include_directories("${INCLUDE_FOLDER}/spdlog/include/")
 include_directories("${INCLUDE_FOLDER}/googletest/googletest/include")
+include_directories("${INCLUDE_FOLDER}/mongo-c-driver")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 ## using Clang
