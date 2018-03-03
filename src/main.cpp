@@ -13,6 +13,7 @@
 #include "version.h"
 #include <bson.h>
 #include <mongoc.h>
+#include <mongocxx/client.hpp>
 
 // to be include here
 

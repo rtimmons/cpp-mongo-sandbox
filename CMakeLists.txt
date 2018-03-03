@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-
 set(OTHER_FILES_EXTENSION "")
 
 set (PROJECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -24,6 +23,9 @@ set (PROJECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
       set(DEBUG_FOLDER "bin") # vs only
 
+set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/build")
+set(CMAKE_PREFIX_PATH    "${CMAKE_CURRENT_SOURCE_DIR}/build")
+
 # output file exe location
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../${OUTPUT_FOLDER})
 
@@ -40,8 +42,19 @@ configure_file (
 include_directories("include")
 include_directories("include/spdlog/include/")
 include_directories("include/googletest/googletest/include")
-include_directories("include/mongo-c-driver/src/mongoc")
-include_directories("include/mongo-c-driver/src/libbson/src/bson")
+
+#include_directories("include/mongo-c-driver/src/mongoc")
+#include_directories("include/mongo-c-driver/src/libbson/src/bson")
+
+set(BSON_ENABLE_STATIC true)
+set(BSON_LIBRARY bundled)
+set(BSONCXX_POLY_USE_BOOST 1)
+set(MONGOC_LIBRARY bundled)
+add_subdirectory("include/mongo-c-driver/src/libbson")
+#include_directories("include/mongo-c-driver/build/cmake")
+#add_subdirectory("include/mongo-c-driver")
+#add_subdirectory("include/mongo-cxx-driver")
+add_subdirectory("include/mongo-cxx-driver")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 ## using Clang
