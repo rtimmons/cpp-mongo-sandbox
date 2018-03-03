@@ -42,13 +42,14 @@ include_directories("${INCLUDE_FOLDER}/spdlog/include/")
 include_directories("${INCLUDE_FOLDER}/googletest/googletest/include")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-# using Clang
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-# using g++
+## using Clang
+#elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+## using g++
+
 set(WARNING "-Wall")
 set(PUBLIC "-static -static-libgcc -static-libstdc++")
 
-set(IDENTIFIER "-fextended-identifiers --input-charset=utf-8 -finput-charset=utf-8 --exec-charset=utf-8")
+# set(IDENTIFIER "-fextended-identifiers --input-charset=utf-8 -finput-charset=utf-8 --exec-charset=utf-8")
 
 set(CPPVERSION "-std=c++11")
 set(MULTITHREAD "-pthread")

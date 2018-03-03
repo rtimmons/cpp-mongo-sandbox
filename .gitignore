@@ -3,6 +3,7 @@
 /build
 */logs/*
 /src/version.h
+/cmake-build-debug
 
 # list of files not to be included in
 *.o
