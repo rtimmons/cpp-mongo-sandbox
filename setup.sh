@@ -15,4 +15,6 @@ if [ ! -d build ]; then
 fi
 pushd build >/dev/null
     cmake ..
+    make
+    ../bin/mloader
 popd >/dev/null
