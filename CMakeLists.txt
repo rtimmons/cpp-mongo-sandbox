@@ -37,10 +37,11 @@ configure_file (
 )
 
 # the included folder for <foo.h>
-include_directories(${INCLUDE_FOLDER})
-include_directories("${INCLUDE_FOLDER}/spdlog/include/")
-include_directories("${INCLUDE_FOLDER}/googletest/googletest/include")
-include_directories("${INCLUDE_FOLDER}/mongo-c-driver")
+include_directories("include")
+include_directories("include/spdlog/include/")
+include_directories("include/googletest/googletest/include")
+include_directories("include/mongo-c-driver/src/mongoc")
+include_directories("include/mongo-c-driver/src/libbson/src/bson")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 ## using Clang
