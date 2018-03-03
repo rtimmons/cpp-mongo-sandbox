@@ -5,8 +5,14 @@ set -x
 
 brew bundle
 
-export LDFLAGS="-L/usr/local/opt/openssl/lib"
-export CPPFLAGS="-I/usr/local/opt/openssl/include"
+export LDFLAGS="-L$(brew --prefix openssl)/lib"
+export CPPFLAGS="-I$(brew --prefix openssl)/include"
 
 git submodule update --init
 
+if [ ! -d build ]; then
+    mkdir build
+fi
+pushd build >/dev/null
+    cmake ..
+popd >/dev/null
