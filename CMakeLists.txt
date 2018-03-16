@@ -128,3 +128,15 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
       # thư mục khi chạy Debug
       set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${DEBUG_FOLDER}")
 endif()
+
+# TODO: bad-merge; is this okay?
+
+cmake_minimum_required(VERSION 3.9)
+project(sandbox)
+
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(sandbox main.cpp)
+add_executable(rank rank.cpp)
+add_executable(excserver excserver.cpp)
+add_executable(hrml hrml.cpp Tag.cpp Tag.h)
