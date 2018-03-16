@@ -21,7 +21,7 @@ static const regex input_line{
         "\\s*" // space
         "=" // equal
         "\\s*" // space
-        "\"([a-zA-Z0-9]+)\"" // attr value
+        "\"([^\"]+)\"" // attr value
         "\\s*" // spaces
     ")*" // any # of attr groups
     ">" // close bracket
@@ -113,12 +113,14 @@ public:
 
                 if (close) {
                     if (st.empty()) {
-                        throw "Invalid closing (no opening)";
+                        cout << "Invalid closing (no opening for tag " << tag_name << ")" << endl;
+                        throw "inalid";
                     }
                     unique_ptr<Tag> top = move(st.top());
                     st.pop();
                     if (tag_name != top->get_name()) {
-                        throw "Invalid closing closed " + top->get_name() + " with tag";
+                        cout << "Invalid closing closed " + top->get_name() + " with tag " + tag_name;
+                        throw "invalid";
                     }
 
                     if (st.empty()) {
@@ -130,6 +132,9 @@ public:
                     continue;
                 }
                 st.push( make_unique<Tag>(tag_name, attrs) );
+            }
+            else {
+                cout << "Invalid line [" << line << "]" << endl;
             }
         }
     }
@@ -207,18 +212,35 @@ ostream &operator<<(ostream &os, Document& document) {
 
 void test() {
     vector<string> lines = {
-            "<tag1 value = \"HelloWorld\">",
-            "<tag2 name = \"Name1\">",
-            R"(<tag3 a = "A" b = "B">)",
-            "</tag3>",
-            "</tag2>",
-            "</tag1>",
-            "<other>",
-            "</other>"
+//            R"(12 10)",
+            R"(<a value = "GoodVal">)",
+            R"(<b value = "BadVal" size = "10">)",
+            R"(<c height = "auto">)",
+            R"(<d size = "3">)",
+            R"(<e strength = "200%">)",
+            R"(<f a1 = "1" a2 = "2" a3 = "3">)",
+            R"(</f>)",
+            R"(</e>)",
+            R"(</d>)",
+            R"(</c>)",
+            R"(</b>)",
+            R"(</a>)",
+//            R"(a.b.c.d.e.f~a1)",
+//            R"(a.b.f~a1)",
+//            R"(a.b~size)",
+//            R"(a.b.c.d.e.f~a2)",
+//            R"(a.b.c.d.e.f~a3)",
+//            R"(a.c~height)",
+//            R"(a.b.d.e~strength)",
+//            R"(a.b.c.d.e~strength)",
+//            R"(d~sze)",
+//            R"(a.b.c.d~size)",
     };
     Document doc {lines};
     cout << doc;
     cout << endl;
+    cout << doc.traverse("a.b.c.d.e.f~a1");
+    cout << endl << endl;
     cout << doc.traverse("....");
     cout << doc.traverse("~~");
     cout << doc.traverse("tag1.tag2~name");
@@ -249,6 +271,7 @@ void run_input() {
 }
 
 int main() {
-    run_input();
+//    run_input();
+    test();
     return 0;
 }
