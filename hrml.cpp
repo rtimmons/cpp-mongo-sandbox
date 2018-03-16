@@ -8,8 +8,6 @@
 #include <stack>
 #include <regex>
 
-#include "Tag.h"
-
 using namespace std;
 
 
@@ -30,6 +28,71 @@ static const regex input_line{
     ">" // close bracket
     "\\s*$" // end
 };
+
+
+class Tag {
+public:
+    Tag(string name,
+        unordered_map<string, string> mAttrs);
+    unordered_map<string,string>& get_attributes();
+    string get_name();
+    virtual ~Tag() = default;
+    Tag(Tag&&); // move
+    unordered_map<string,unique_ptr<Tag>>& get_children();
+    Tag& operator=(Tag&&);
+    // copy ops deleted if lass declares move operation
+    Tag(const Tag&) = default; // copy
+    Tag& operator=(const Tag&) = default;
+    friend ostream &operator<<(ostream &os, Tag& tag);
+
+    void add_child(unique_ptr<Tag>&& tag);
+private:
+    string mName;
+    unordered_map<string,string> mAttrs;
+    unordered_map<string,std::unique_ptr<Tag>> children;
+};
+
+
+
+Tag::Tag(string name,
+         unordered_map<string, string> mAttrs)
+        :   mName(std::move(name)),
+            mAttrs(std::move(mAttrs)),
+            children(unordered_map<string,unique_ptr<Tag>>{}) {  }
+
+string Tag::get_name() {
+    return this->mName;
+}
+
+Tag::Tag(Tag&& rhs)
+        :   mName{ move(rhs.mName) }
+        ,   mAttrs{ move(rhs.mAttrs) }
+        ,   children{ move(rhs.children) }
+{
+}
+
+Tag &Tag::operator=(Tag &&rhs)
+{
+    this->mName = move(rhs.mName);
+    this->mAttrs = move(rhs.mAttrs);
+    this->children = move(rhs.children);
+    return *this;
+}
+
+
+
+unordered_map<string, string>& Tag::get_attributes() {
+    return this->mAttrs;
+}
+
+unordered_map<string,unique_ptr<Tag>>& Tag::get_children() {
+    return this->children;
+}
+
+void Tag::add_child(unique_ptr<Tag>&& child) {
+    this->children.insert_or_assign(child->get_name(), move(child));
+}
+
 
 ostream &operator<<(ostream &os, unordered_map<string,Tag>& m) {
     for(auto& e : m) {
