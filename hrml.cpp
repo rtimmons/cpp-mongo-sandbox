@@ -41,9 +41,9 @@ ostream &operator<<(ostream &os, unordered_map<string,Tag>& m) {
     return os;
 }
 
-ostream &operator<<(ostream &os, list<Tag>& m) {
+ostream &operator<<(ostream &os, unordered_map<string,unique_ptr<Tag>>& m) {
     for(auto& e : m) {
-        os << e << " ";
+        os << *e.second << " ";
     }
     return os;
 }
@@ -68,14 +68,13 @@ ostream &operator<<(ostream &os, Tag& tag) {
 
 
 
-
 class Document {
-    unordered_map<string,Tag> tags;
-    stack<Tag> st;
+    unordered_map<string,unique_ptr<Tag>> tags;
+    stack<unique_ptr<Tag>> st;
 public:
     explicit Document(vector<string>& lines)
-    : tags{ unordered_map<string,Tag>(20) },
-      st{ stack<Tag>() }
+    : tags{ unordered_map<string,unique_ptr<Tag>>(20) },
+      st{ stack<unique_ptr<Tag>>() }
     {
         for(const auto& line : lines) {
             smatch r;
@@ -96,28 +95,45 @@ public:
                     if (st.empty()) {
                         throw "Invalid closing (no opening)";
                     }
-                    Tag top = move(st.top());
+                    unique_ptr<Tag> top = move(st.top());
                     st.pop();
-                    if (tag != top.get_name()) {
-                        throw "Invalid closing closed " + top.get_name() + " with tag";
+                    if (tag != top->get_name()) {
+                        throw "Invalid closing closed " + top->get_name() + " with tag";
                     }
 
                     if (st.empty()) {
                         this->tags.insert({move(tag), move(top)});
                     }
                     else {
-                        st.top().add_child(move(top));
+                        st.top()->add_child(move(top));
                     }
                     continue;
                 }
-
-                Tag t{move(tag), move(attrs)};
-                st.push(t);
+                st.push( make_unique<Tag>(tag, attrs) );
             }
         }
     }
 
-    unordered_map<string,Tag> &get_tags() {
+    string traverse(string const &path) {
+        istringstream iss {path};
+        Tag *child = nullptr;
+        for(string token; getline(iss, token, '.'); ) {
+            size_t tilde = token.find('~');
+            string tagname = token.substr(0, tilde == string::npos ? token.length() : tilde);
+            if ( child == nullptr ) {
+                child = &*this->tags[tagname];
+            } else {
+                child = &*child->get_children()[tagname];
+            }
+            if (tilde != string::npos) {
+                string attr = token.substr(tilde+1);
+                return child->get_attributes()[attr];
+            }
+        }
+        return "NOT FOUND";
+    }
+
+    unordered_map<string,unique_ptr<Tag>> &get_tags() {
         return this->tags;
     }
 };
@@ -142,6 +158,8 @@ void test() {
     };
     Document doc {lines};
     cout << doc;
+    cout << endl;
+    cout << doc.traverse("tag1.tag2~name");
 }
 
 int main() {

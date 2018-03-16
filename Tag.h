@@ -7,13 +7,11 @@
 
 #include <vector>
 #include <list>
+#include <memory>
 
 using namespace std;
 
 class Tag {
-    string mName;
-    unordered_map<string,string> mAttrs;
-    list<Tag> children;
 public:
     Tag(string name,
         unordered_map<string, string> mAttrs);
@@ -21,14 +19,18 @@ public:
     string get_name();
     virtual ~Tag() = default;
     Tag(Tag&&); // move
-    list<Tag>& get_children();
+    unordered_map<string,unique_ptr<Tag>>& get_children();
     Tag& operator=(Tag&&);
     // copy ops deleted if lass declares move operation
     Tag(const Tag&) = default; // copy
     Tag& operator=(const Tag&) = default;
     friend ostream &operator<<(ostream &os, Tag& tag);
 
-    void add_child(Tag&& tag);
+    void add_child(unique_ptr<Tag>&& tag);
+private:
+    string mName;
+    unordered_map<string,string> mAttrs;
+    unordered_map<string,std::unique_ptr<Tag>> children;
 };
 
 

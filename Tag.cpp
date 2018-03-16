@@ -16,7 +16,7 @@ Tag::Tag(string name,
          unordered_map<string, string> mAttrs)
             :   mName(std::move(name)),
                 mAttrs(std::move(mAttrs)),
-                children(std::list<Tag>()) {  }
+                children(unordered_map<string,unique_ptr<Tag>>{}) {  }
 
 string Tag::get_name() {
     return this->mName;
@@ -43,10 +43,10 @@ unordered_map<string, string>& Tag::get_attributes() {
     return this->mAttrs;
 }
 
-list<Tag>& Tag::get_children() {
+unordered_map<string,unique_ptr<Tag>>& Tag::get_children() {
     return this->children;
 }
 
-void Tag::add_child(Tag&& tag) {
-    this->children.push_back(move(tag));
+void Tag::add_child(unique_ptr<Tag>&& child) {
+    this->children.insert_or_assign(child->get_name(), move(child));
 }
