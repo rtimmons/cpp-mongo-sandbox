@@ -6,17 +6,17 @@
 #include <ostream>
 #include <unordered_map>
 #include <iostream>
+#include <list>
 #include "Tag.h"
 
 using namespace std;
 
 
-Tag::Tag(string mName,
-        unordered_map<string, string> mAttrs,
-        vector<Tag> children)
-            :   mName(std::move(mName)),
-                mAttrs(std::move(mAttrs)),
-                children(std::move(children)) {}
+Tag::Tag(string name,
+         unordered_map<string, string> mAttrs)
+            :   mName(name),
+                mAttrs(mAttrs),
+                children(std::list<Tag>()) {  }
 
 string Tag::get_name() {
     return this->mName;

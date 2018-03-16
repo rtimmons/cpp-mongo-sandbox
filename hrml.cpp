@@ -11,15 +11,6 @@
 #include "Tag.h"
 
 using namespace std;
-//
-//ostream &&operator<<(ostream &os, const unordered_map<string,string> &m){
-//    return std::move(os);
-//}
-//
-//ostream &&operator<<(ostream &os, const vector<Tag> &m){
-//    return move(os);
-//}
-
 
 
 static const regex input_line{
@@ -40,55 +31,72 @@ static const regex input_line{
     "\\s*$" // end
 };
 
-template<typename T>
-ostream &operator<<(ostream &os, unordered_map<string,T> &m) {
-    for(auto&& e : m) {
-        os << "(" << e.first << "=>" << e.second << ")";
+ostream &operator<<(ostream &os, unordered_map<string,Tag> m) {
+    for(auto& e : m) {
+        os << "(" << e.first;
+        os << "=>";
+        os.flush();
+        os << e.second << ")";
     }
     return os;
 }
 
-ostream &operator<<(ostream &os, unordered_map<string,string> &m) {
-    for(auto&& e : m) {
+ostream &operator<<(ostream &os, list<Tag> m) {
+    for(auto& e : m) {
+        os << e << " ";
+    }
+    return os;
+}
+
+ostream &operator<<(ostream &os, unordered_map<string,string> m) {
+    for(auto& e : m) {
         os << e.first << "=\"" << e.second << "\" ";
     }
     return os;
 }
 
-ostream &operator<<(ostream &os, Tag &tag) {
+ostream &operator<<(ostream &os, Tag tag) {
     os << "<";
     os << tag.get_name() << " ";
     os << tag.get_attributes();
     os << ">";
+
+    os << tag.get_children();
+    os << "</" << tag.get_name() << ">";
+    return os;
 }
 
-unordered_map<string, string> &Tag::get_attributes() {
+unordered_map<string, string> Tag::get_attributes() {
     return this->mAttrs;
 }
 
+list<Tag> Tag::get_children() {
+    return this->children;
+}
 
+void Tag::add_child(Tag tag) {
+    this->children.push_back(tag);
+}
 
 
 class Document {
     unordered_map<string,Tag> tags;
     stack<Tag> st;
 public:
-    Document(vector<string> &lines)
+    explicit Document(vector<string> lines)
     : tags{ unordered_map<string,Tag>(20) },
       st{ stack<Tag>() }
     {
-        for(const auto &line : lines) {
+        for(const auto line : lines) {
             smatch r;
             if (regex_match(line, r, input_line)) {
                 std::unordered_map<string,string> attrs(20);
                 bool close = r[1].length() == 1;
                 string tag = r[2];
-//                cout << "Line   " << line << " close " << close << endl;
-//                cout << "   tag " << tag << endl;
                 const long size = distance(r.begin(), r.end());
                 for(int g=4; g<size; ++g) {
-                    const string& name = r[g];
-                    const string& val  = r[++g];
+                    const string name = r[g];
+                    const string val  = r[++g];
                     if (name.length() != 0) {
                         attrs[name] = val;
                     }
@@ -98,44 +106,44 @@ public:
                     if (st.empty()) {
                         throw "Invalid closing (no opening)";
                     }
-                    Tag top = st.top(); st.pop();
+                    Tag top = st.top();
+                    st.pop();
                     if (tag != top.get_name()) {
                         throw "Invalid closing closed " + top.get_name() + " with tag";
                     }
 
                     if (st.empty()) {
-                        this->tags.insert({move(tag), move(top)});
+                        this->tags.insert({tag, top});
+                    }
+                    else {
+                        st.top().add_child(top);
                     }
                     continue;
                 }
 
-                Tag t{tag, std::move(attrs), vector<Tag>()};
+                Tag t{tag, attrs};
                 st.push(t);
             }
         }
     }
 
-    friend ostream &operator<<(ostream &os, Document &document) {
-        os << "tags: " << document.tags;
-        return os;
+    unordered_map<string,Tag> get_tags() {
+        return this->tags;
     }
 };
 
-
-//            bool closing = false;
-//            if ( line[0] != '<' ) {
-//                throw "Invalid input " + line;
-//            }
-//            if ( line[1] == '/' ) {
-//                closing = true;
-//            }
+ostream &operator<<(ostream &os, Document document) {
+    cout.flush();
+    os << "tags: " << document.get_tags();
+    return os;
+}
 
 
 void test() {
     vector<string> lines = {
             "<tag1 value = \"HelloWorld\">",
-//            "<tag2 name = \"Name1\">",
-//            "</tag2>",
+            "<tag2 name = \"Name1\">",
+            "</tag2>",
             "</tag1>"
     };
     Document doc {lines};
