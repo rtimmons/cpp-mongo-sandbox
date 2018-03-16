@@ -20,15 +20,15 @@ public:
     unordered_map<string,string>& get_attributes();
     string get_name();
     virtual ~Tag() = default;
-    Tag(Tag&&) = default; // move
+    Tag(Tag&&); // move
     list<Tag>& get_children();
-    Tag& operator=(Tag&&) = default;
+    Tag& operator=(Tag&&);
     // copy ops deleted if lass declares move operation
     Tag(const Tag&) = default; // copy
     Tag& operator=(const Tag&) = default;
     friend ostream &operator<<(ostream &os, Tag& tag);
 
-    void add_child(Tag tag);
+    void add_child(Tag&& tag);
 };
 
 

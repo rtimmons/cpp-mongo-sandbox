@@ -22,6 +22,31 @@ string Tag::get_name() {
     return this->mName;
 }
 
+Tag::Tag(Tag&& rhs)
+:   mName{ move(rhs.mName) }
+,   mAttrs{ move(rhs.mAttrs) }
+,   children{ move(rhs.children) }
+{
+}
+
+Tag &Tag::operator=(Tag &&rhs)
+{
+    this->mName = move(rhs.mName);
+    this->mAttrs = move(rhs.mAttrs);
+    this->children = move(rhs.children);
+    return *this;
+}
 
 
 
+unordered_map<string, string>& Tag::get_attributes() {
+    return this->mAttrs;
+}
+
+list<Tag>& Tag::get_children() {
+    return this->children;
+}
+
+void Tag::add_child(Tag&& tag) {
+    this->children.push_back(move(tag));
+}

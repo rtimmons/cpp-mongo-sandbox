@@ -66,24 +66,14 @@ ostream &operator<<(ostream &os, Tag& tag) {
     return os;
 }
 
-unordered_map<string, string>& Tag::get_attributes() {
-    return this->mAttrs;
-}
 
-list<Tag>& Tag::get_children() {
-    return this->children;
-}
-
-void Tag::add_child(Tag tag) {
-    this->children.push_back(tag);
-}
 
 
 class Document {
     unordered_map<string,Tag> tags;
     stack<Tag> st;
 public:
-    explicit Document(vector<string> lines)
+    explicit Document(vector<string>& lines)
     : tags{ unordered_map<string,Tag>(20) },
       st{ stack<Tag>() }
     {
@@ -106,22 +96,22 @@ public:
                     if (st.empty()) {
                         throw "Invalid closing (no opening)";
                     }
-                    Tag top = st.top();
+                    Tag top = move(st.top());
                     st.pop();
                     if (tag != top.get_name()) {
                         throw "Invalid closing closed " + top.get_name() + " with tag";
                     }
 
                     if (st.empty()) {
-                        this->tags.insert({tag, top});
+                        this->tags.insert({move(tag), move(top)});
                     }
                     else {
-                        st.top().add_child(top);
+                        st.top().add_child(move(top));
                     }
                     continue;
                 }
 
-                Tag t{tag, attrs};
+                Tag t{move(tag), move(attrs)};
                 st.push(t);
             }
         }
@@ -143,8 +133,12 @@ void test() {
     vector<string> lines = {
             "<tag1 value = \"HelloWorld\">",
             "<tag2 name = \"Name1\">",
+            R"(<tag3 a = "A" b = "B">)",
+            "</tag3>",
             "</tag2>",
-            "</tag1>"
+            "</tag1>",
+            "<other>",
+            "</other>"
     };
     Document doc {lines};
     cout << doc;
