@@ -31,7 +31,7 @@ static const regex input_line{
     "\\s*$" // end
 };
 
-ostream &operator<<(ostream &os, unordered_map<string,Tag> m) {
+ostream &operator<<(ostream &os, unordered_map<string,Tag>& m) {
     for(auto& e : m) {
         os << "(" << e.first;
         os << "=>";
@@ -41,21 +41,21 @@ ostream &operator<<(ostream &os, unordered_map<string,Tag> m) {
     return os;
 }
 
-ostream &operator<<(ostream &os, list<Tag> m) {
+ostream &operator<<(ostream &os, list<Tag>& m) {
     for(auto& e : m) {
         os << e << " ";
     }
     return os;
 }
 
-ostream &operator<<(ostream &os, unordered_map<string,string> m) {
+ostream &operator<<(ostream &os, unordered_map<string,string>& m) {
     for(auto& e : m) {
         os << e.first << "=\"" << e.second << "\" ";
     }
     return os;
 }
 
-ostream &operator<<(ostream &os, Tag tag) {
+ostream &operator<<(ostream &os, Tag& tag) {
     os << "<";
     os << tag.get_name() << " ";
     os << tag.get_attributes();
@@ -66,11 +66,11 @@ ostream &operator<<(ostream &os, Tag tag) {
     return os;
 }
 
-unordered_map<string, string> Tag::get_attributes() {
+unordered_map<string, string>& Tag::get_attributes() {
     return this->mAttrs;
 }
 
-list<Tag> Tag::get_children() {
+list<Tag>& Tag::get_children() {
     return this->children;
 }
 
@@ -87,7 +87,7 @@ public:
     : tags{ unordered_map<string,Tag>(20) },
       st{ stack<Tag>() }
     {
-        for(const auto line : lines) {
+        for(const auto& line : lines) {
             smatch r;
             if (regex_match(line, r, input_line)) {
                 std::unordered_map<string,string> attrs(20);
@@ -127,12 +127,12 @@ public:
         }
     }
 
-    unordered_map<string,Tag> get_tags() {
+    unordered_map<string,Tag> &get_tags() {
         return this->tags;
     }
 };
 
-ostream &operator<<(ostream &os, Document document) {
+ostream &operator<<(ostream &os, Document& document) {
     cout.flush();
     os << "tags: " << document.get_tags();
     return os;

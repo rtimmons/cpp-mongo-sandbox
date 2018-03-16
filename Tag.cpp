@@ -14,8 +14,8 @@ using namespace std;
 
 Tag::Tag(string name,
          unordered_map<string, string> mAttrs)
-            :   mName(name),
-                mAttrs(mAttrs),
+            :   mName(std::move(name)),
+                mAttrs(std::move(mAttrs)),
                 children(std::list<Tag>()) {  }
 
 string Tag::get_name() {
