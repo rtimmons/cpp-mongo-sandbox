@@ -84,7 +84,7 @@ unordered_map<string,unique_ptr<Tag>>& Tag::get_children() {
 }
 
 void Tag::add_child(unique_ptr<Tag>&& child) {
-    this->children.insert_or_assign(child->get_name(), move(child));
+    this->children[child->get_name()] = move(child);
 }
 
 
@@ -122,7 +122,7 @@ public:
                     }
 
                     if (st.empty()) {
-                        this->tags.insert({move(tag_name), move(top)});
+                        this->tags[tag_name] = move(top);
                     }
                     else {
                         st.top()->add_child(move(top));
@@ -151,7 +151,7 @@ public:
             if (tilde != string::npos) {
                 string attr = token.substr(tilde+1);
                 auto found = child->get_attributes().find(attr);
-                return found == child->get_attributes().end() ? "Not Found" : found->second;
+                return found == child->get_attributes().end() ? "Not Found!" : found->second;
             }
         }
         return "Not Found!";
@@ -227,8 +227,28 @@ void test() {
     cout << doc.traverse("tag1.tag2.tag3~d");
 }
 
-int main() {
-    test();
-    return 0;
+void run_input() {
+    unsigned long nlines, nqueries;
+    cin >> nlines >> nqueries;
+    string ignore;
+    getline(cin, ignore);
+    std::vector<string> lines{};
+    while(nlines-- > 0) {
+        string line;
+        getline(cin, line);
+        lines.push_back(line);
+    }
+    Document doc {lines};
+
+    std::vector<string> queries(nqueries);
+    while(nqueries-- > 0) {
+        string line;
+        getline(cin, line);
+        cout << doc.traverse(line) << endl;
+    }
 }
 
+int main() {
+    run_input();
+    return 0;
+}
