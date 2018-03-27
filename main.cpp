@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <set>
 
 using namespace std;
 static int copies = 0;
@@ -102,15 +103,14 @@ private:
 public:
     explicit Foo(int x_) : x{x_} {}
     int getx() const { return x; }
-    int setx(int to) { x = to;   }
+    void setx(int to) { x = to;   }
 };
 
 
-class Foo {
-    int x;
-    Foo() : x{7} {}
-    Foo
-};
+//class Foo {
+//    int x;
+//    Foo() : x{7} {}
+//};
 
 class Wat {
     int *data;
@@ -130,12 +130,13 @@ void works() {
     std::vector<Wat> x(10);
 }
 
-int main() {
+int oomain() {
     // works:
 //    std::vector<Wat> x(10);
 
     // std::bad_array_new_length;
     std::vector<Wat2> x2(10);
+    return 0;
 }
 
 
@@ -166,6 +167,33 @@ int omain2() {
     return 0;
 }
 
+int main() {
+    using namespace std;
+
+    set<int> vs;
+
+    int queries = 0;
+    cin >> queries;
+    while(queries--) {
+        int typ = 0;
+        int val = 0;
+        cin >> typ >> val;
+        if (typ == 1) {
+            vs.insert(val);
+        } else if (typ == 2) {
+            vs.erase(val);
+        } else if (typ == 3) {
+            if (vs.find(val) != vs.end()) {
+                cout << "Yes" << endl;
+            } else {
+                cout << "No" << endl;
+            }
+        }
+    }
+
+    return 0;
+}
+
 
 //int n = 0;
 //struct C {
@@ -180,3 +208,10 @@ int omain2() {
 //    std::cout << n << std::endl; // prints 0 if the copy was elided, 1 otherwise
 //    return 0;
 //}
+
+
+// ----------------------------------------
+
+
+
+
