@@ -1,7 +1,7 @@
 #include <iostream>
 
-constexpr int gcd(int, int);
-constexpr int lcm(int, int);
+int gcd(int, int);
+int lcm(int, int);
 
 class rational {
 public:
@@ -28,11 +28,11 @@ private:
     friend rational operator+(rational a, const rational& b);
 };
 
-constexpr int lcm(const int a, const int b) {
+int lcm(const int a, const int b) {
     return a*b / gcd(a,b);
 }
 
-constexpr int gcd(int a, int b) {
+int gcd(int a, int b) {
     a = abs(a); b = abs(b);
     while(b!=0) {
         int t = b;

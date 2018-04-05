@@ -137,6 +137,10 @@ project(sandbox)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
+# https://github.com/Orphis/boost-cmake
+add_subdirectory(boost-cmake)
+add_subdirectory(rates)
+
 add_executable(sandbox main.cpp)
 add_executable(rank rank.cpp)
 add_executable(excserver excserver.cpp)

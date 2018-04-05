@@ -11,3 +11,6 @@
 [submodule "include/mongo-c-driver"]
 	path = include/mongo-c-driver
 	url = https://github.com/mongodb/mongo-c-driver.git
+[submodule "boost-cmake"]
+	path = boost-cmake
+	url = https://github.com/Orphis/boost-cmake.git
