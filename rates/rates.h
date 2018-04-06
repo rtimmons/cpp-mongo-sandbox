@@ -56,7 +56,13 @@ namespace rr {
     };
 
     template <typename T>
-    using pairs = std::vector<std::pair<std::pair<T,unit>, std::pair<T,unit>>>;
+    using upair = std::pair<T,unit>;
+
+    template<typename T>
+    using upairs = std::pair<upair<T>, upair<T>>;
+
+    template <typename T>
+    using pairs = std::vector<upairs<T>>;
 
     template <class T>
     class table {
