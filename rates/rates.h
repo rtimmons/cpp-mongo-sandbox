@@ -1,6 +1,8 @@
 #include <utility>
 #include <string>
 #include <map>
+#include <vector>
+#include <iostream>
 
 namespace rr {
 
@@ -53,20 +55,39 @@ namespace rr {
         : quantities<T>(from, from_amt, to, to_amt) {}
     };
 
+    template <typename T>
+    using pairs = std::vector<std::pair<std::pair<T,unit>, std::pair<T,unit>>>;
+
     template <class T>
     class table {
     public:
-        template <typename...Args>
-        table(Args&&...args)
-        : vals(std::forward<Args>(args)...) {}
-
-        template <typename...Args>
-        void insert(Args&&...args) {
-            this->vals.insert(std::forward<Args>(args)...);
-        }
+        table(pairs<T> vals)
+        : vals_(std::move(create_map(std::move(vals)))) {}
+        std::multimap<unit,equiv<T>> vals_;
     private:
-        std::multimap<unit,equiv<T>> vals;
+        std::multimap<unit,equiv<T>> create_map(pairs<T> &&pairs) {
+            std::multimap<unit,equiv<T>> out;
+            for(const auto& pair : pairs) {
+                out.insert({pair.first.second, {
+                    pair.first.second,
+                    pair.first.first,
+                    pair.second.second,
+                    pair.second.first
+                }});
+            }
+            return std::move(out);
+        }
+        // TODO: why do things break if this is declared and vals_ is private?
+//        friend std::ostream& operator<<(std::ostream& out, table<T> const& table);
     };
 
+    template<typename T>
+    std::ostream& operator<<(std::ostream& out, rr::table<T> const& t) {
+        out << "Table{"
+            << t.vals_.size()
+            << "}"
+            << std::endl;
+        return out;
+    }
 };
 

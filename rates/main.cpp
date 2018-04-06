@@ -12,16 +12,16 @@ const unit
     hour    {"hour"},
     minute  {"minute"}
 ;
-equiv<long> mtf {mile, 1L, foot, 5018L}; 
 
+table<long> tab {{
+    {{1, mile}, {5028, foot}},
+    {{1, hour}, {60,   minute}}
+}};
 
 
 int main() {
-
-    table<long> table;
-    table.insert(pair<unit,equiv<long>>{mile, mtf});
-    table.insert(pair<unit,equiv<long>>{mile, mtf});
     cout << "hello, world" << endl;
+    cout << tab << endl;
     return 0;
 }
 
