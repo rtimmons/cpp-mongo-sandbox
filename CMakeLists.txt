@@ -50,11 +50,12 @@ set(BSON_ENABLE_STATIC true)
 set(BSON_LIBRARY bundled)
 set(BSONCXX_POLY_USE_BOOST 1)
 set(MONGOC_LIBRARY bundled)
+include_directories("include/mongo-c-driver/build/cmake")
 add_subdirectory("include/mongo-c-driver/src/libbson")
-#include_directories("include/mongo-c-driver/build/cmake")
-#add_subdirectory("include/mongo-c-driver")
+
+add_subdirectory("include/mongo-c-driver")
 #add_subdirectory("include/mongo-cxx-driver")
-add_subdirectory("include/mongo-cxx-driver")
+#add_subdirectory("include/mongo-cxx-driver")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 ## using Clang
