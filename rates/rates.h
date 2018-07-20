@@ -13,6 +13,7 @@ namespace rr {
         const std::string& name() {
             return name_;
         }
+        // TODO: easy way to generate == etc based on a set of members to use?
         bool operator==(const unit& other) const noexcept {
             return this->name_ == other.name_;
         }
